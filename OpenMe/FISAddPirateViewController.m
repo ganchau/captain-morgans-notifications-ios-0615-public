@@ -30,12 +30,18 @@
 }
 
 - (IBAction)saveButtonTapped:(id)sender {
-    FISPiratesDataStore *store = [FISPiratesDataStore sharedPiratesDataStore];
-    Pirate *newPirate = [NSEntityDescription insertNewObjectForEntityForName:@"Pirate" inManagedObjectContext:store.managedObjectContext];
-    newPirate.name = self.pirateNameField.text;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"addObjectNotification"
+                                                        object:nil
+                                                      userInfo:@{ @"object" : @"pirate",
+                                                                  @"pirateName" : self.pirateNameField.text }];
     
-    [store save];
     [self dismissViewControllerAnimated:YES completion:nil];
+
+//    FISPiratesDataStore *store = [FISPiratesDataStore sharedPiratesDataStore];
+//    Pirate *newPirate = [NSEntityDescription insertNewObjectForEntityForName:@"Pirate" inManagedObjectContext:store.managedObjectContext];
+//    newPirate.name = self.pirateNameField.text;
+//    
+//    [store save];
 }
 
 - (IBAction)cancelButtonTapped:(id)sender {

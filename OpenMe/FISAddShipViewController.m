@@ -33,16 +33,26 @@
 }
 
 - (IBAction)saveButtonTapped:(id)sender {
-    FISPiratesDataStore *store = [FISPiratesDataStore sharedPiratesDataStore];
-    Ship *newShip = [NSEntityDescription insertNewObjectForEntityForName:@"Ship" inManagedObjectContext:store.managedObjectContext];
-    newShip.name = self.shipNameField.text;
-    newShip.engine = [NSEntityDescription insertNewObjectForEntityForName:@"Engine" inManagedObjectContext:store.managedObjectContext];
-    newShip.engine.engineType = self.engineTypeField.text;
     
-    [self.pirate addShipsObject:newShip];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"addObjectNotification"
+                                                        object:nil
+                                                      userInfo:@{ @"object" : @"ship",
+                                                                  @"pirate" : self.pirate,
+                                                                  @"shipName" : self.shipNameField.text,
+                                                                  @"engineType" : self.engineTypeField.text }];
     
-    [store save];
     [self dismissViewControllerAnimated:YES completion:nil];
+    
+//    FISPiratesDataStore *store = [FISPiratesDataStore sharedPiratesDataStore];
+//    Ship *newShip = [NSEntityDescription insertNewObjectForEntityForName:@"Ship" inManagedObjectContext:store.managedObjectContext];
+//    newShip.name = self.shipNameField.text;
+//    newShip.engine = [NSEntityDescription insertNewObjectForEntityForName:@"Engine" inManagedObjectContext:store.managedObjectContext];
+//    newShip.engine.engineType = self.engineTypeField.text;
+//    
+//    [self.pirate addShipsObject:newShip];
+//    
+//    [store save];
+//    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)cancelButtonTapped:(id)sender {

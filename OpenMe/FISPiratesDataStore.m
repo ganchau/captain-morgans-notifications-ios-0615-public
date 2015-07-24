@@ -7,6 +7,8 @@
 //
 
 #import "FISPiratesDataStore.h"
+#import "Pirate+convenienceMethods.h"
+#import "Ship+convenienceMethods.h"
 #import "Ship.h"
 #import "Engine.h"
 
@@ -18,8 +20,42 @@ typedef NS_ENUM(NSInteger, EngineType) {
     Solar
 };
 @end
+
 @implementation FISPiratesDataStore
 @synthesize managedObjectContext = _managedObjectContext;
+
+- (instancetype)init
+{
+    self = [super init];
+    
+    if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(addObjectWithNotification:)
+                                                     name:@"addObjectNotification"
+                                                   object:nil];
+    }
+
+    return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:@"addObjectNotification"
+                                                  object:nil];
+}
+
+- (void)addObjectWithNotification:(NSNotification *)notification
+{
+    if ([notification.userInfo[@"object"] isEqualToString:@"pirate"]) {
+        [Pirate pirateFromDictionary:notification.userInfo andContext:self.managedObjectContext];
+    } else {
+        [Ship shipFromDictionary:notification.userInfo andContext:self.managedObjectContext];
+    }
+    
+    [self save];
+    [self fetchData];
+}
 
 # pragma mark - Singleton
 
